@@ -19,12 +19,15 @@ class Singleton:
 
 
 class Const:
-    STEP_DURATION = 0.010
-    PLAYER_WIDTH = 30
-    PLAYER_HEIGHT = 30
-    PLAYER_STEP = 5
-    PLAYER_SPRINT = 10
-    WALL_LENGTH = 1000
+    FRAME_RATE = 120  # frames per sec
+    PLAYER_WIDTH = 30  # pixels
+    PLAYER_HEIGHT = 30  # pixels
+    PLAYER_STEP_PPS = 600  # pixels per sec
+    PLAYER_SPRINT_PPS = 1200  # pixels per sec
+
+    STEP_DURATION = round(1 / FRAME_RATE * 1000) / 1000
+    PLAYER_STEP = round(PLAYER_STEP_PPS / FRAME_RATE)
+    PLAYER_SPRINT = round(PLAYER_SPRINT_PPS / FRAME_RATE)
 
 
 class Color:
@@ -71,13 +74,14 @@ class GlobalWindow(Singleton):
         self.blue_square = pygame.Surface(
             (Const.PLAYER_WIDTH, Const.PLAYER_HEIGHT)
         )
+        WALL_LENGTH = 1000
         self.blue_square.fill(Color.BLUE)
         self.v_wall_surf = pygame.Surface(
-            (Const.PLAYER_WIDTH, Const.WALL_LENGTH)
+            (Const.PLAYER_WIDTH, WALL_LENGTH)
         )
         self.v_wall_surf.fill(Color.WHITE)
         self.h_wall_surf = pygame.Surface(
-            (Const.WALL_LENGTH, Const.PLAYER_HEIGHT)
+            (WALL_LENGTH, Const.PLAYER_HEIGHT)
         )
         self.h_wall_surf.fill(Color.WHITE)
 
@@ -93,15 +97,17 @@ class GlobalWindow(Singleton):
             (w - Const.PLAYER_WIDTH) // 2,
             (h - Const.PLAYER_HEIGHT) // 2
         ))
+        WALL_LENGTH = 1000  # pixels
+
         for h_wall in (game_state.walls[key] for key in ("top", "bot")):
             screen.blit(self.h_wall_surf, (
-                ow + h_wall[0] - game_state.blue_square_pos[0] - Const.WALL_LENGTH // 2,  # noqa E501
+                ow + h_wall[0] - game_state.blue_square_pos[0] - WALL_LENGTH // 2,  # noqa E501
                 oh + h_wall[1] - game_state.blue_square_pos[1] - Const.PLAYER_HEIGHT // 2,  # noqa E501
             ))
         for v_wall in (game_state.walls[key] for key in ("left", "right")):
             screen.blit(self.v_wall_surf, (
                 ow + v_wall[0] - game_state.blue_square_pos[0] - Const.PLAYER_WIDTH // 2,  # noqa E501
-                oh + v_wall[1] - game_state.blue_square_pos[1] - Const.WALL_LENGTH // 2,  # noqa E501
+                oh + v_wall[1] - game_state.blue_square_pos[1] - WALL_LENGTH // 2,  # noqa E501
             ))
 
 
