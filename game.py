@@ -78,7 +78,6 @@ ORTH = {
     pygame.K_UP: HORIZONTAL, pygame.K_DOWN: HORIZONTAL,
     pygame.K_LEFT: VERTICAL, pygame.K_RIGHT: VERTICAL
 }
-POSITIVE = pygame.K_RIGHT, pygame.K_DOWN
 
 
 class GameState(Singleton):
@@ -98,23 +97,26 @@ class GameState(Singleton):
         if keydown[pygame.K_ESCAPE]:
             raise Quit
 
-        for key in (pygame.K_UP, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_LEFT):
-            if keydown[key]:
-                coord = 1 if key in VERTICAL else 0
-                step = (
-                    Const.PLAYER_SPRINT
-                    if keydown[pygame.K_LSHIFT]
-                    else Const.PLAYER_STEP
-                )
-                diagonal_factor = (
-                    sqrt(2).real / 2
-                    if any(keydown[orth] for orth in ORTH[key])
-                    else 1
-                )
-                direction = 1 if key in POSITIVE else -1
-                self.blue_square_pos[coord] += (
-                    direction * round(step * diagonal_factor)
-                )
+        def _step_toward(direction):
+            if not keydown[direction]:
+                return 0
+            step = (
+                Const.PLAYER_SPRINT
+                if keydown[pygame.K_LSHIFT]
+                else Const.PLAYER_STEP
+            )
+            diagonal_factor = (
+                sqrt(2).real / 2
+                if any(keydown[orth] for orth in ORTH[direction])
+                else 1
+            )
+            return round(step * diagonal_factor)
+        self.blue_square_pos[0] += (
+            _step_toward(pygame.K_RIGHT) - _step_toward(pygame.K_LEFT)
+        )
+        self.blue_square_pos[1] += (
+            _step_toward(pygame.K_DOWN) - _step_toward(pygame.K_UP)
+        )
 
 
 def loop():
