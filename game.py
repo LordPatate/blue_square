@@ -2,6 +2,7 @@ from cmath import sqrt
 import json
 import logging
 import pathlib
+import threading
 import time
 
 import pygame
@@ -67,6 +68,42 @@ class GlobalWindow(Singleton):
             size, fullscreen | borderless
         )
 
+        self.blue_square = pygame.Surface(
+            (Const.PLAYER_WIDTH, Const.PLAYER_HEIGHT)
+        )
+        self.blue_square.fill(Color.BLUE)
+        self.v_wall_surf = pygame.Surface(
+            (Const.PLAYER_WIDTH, Const.WALL_LENGTH)
+        )
+        self.v_wall_surf.fill(Color.WHITE)
+        self.h_wall_surf = pygame.Surface(
+            (Const.WALL_LENGTH, Const.PLAYER_HEIGHT)
+        )
+        self.h_wall_surf.fill(Color.WHITE)
+
+    def update(self):
+        screen = self.screen
+        w = screen.get_width()
+        h = screen.get_height()
+        ow, oh = (w // 2, h // 2)
+        game_state = GameState.get_instance()
+
+        screen.fill(Color.BLACK)
+        screen.blit(self.blue_square, (
+            (w - Const.PLAYER_WIDTH) // 2,
+            (h - Const.PLAYER_HEIGHT) // 2
+        ))
+        for h_wall in (game_state.walls[key] for key in ("top", "bot")):
+            screen.blit(self.h_wall_surf, (
+                ow + h_wall[0] - game_state.blue_square_pos[0] - Const.WALL_LENGTH // 2,  # noqa E501
+                oh + h_wall[1] - game_state.blue_square_pos[1] - Const.PLAYER_HEIGHT // 2,  # noqa E501
+            ))
+        for v_wall in (game_state.walls[key] for key in ("left", "right")):
+            screen.blit(self.v_wall_surf, (
+                ow + v_wall[0] - game_state.blue_square_pos[0] - Const.PLAYER_WIDTH // 2,  # noqa E501
+                oh + v_wall[1] - game_state.blue_square_pos[1] - Const.WALL_LENGTH // 2,  # noqa E501
+            ))
+
 
 class Quit(Exception):
     pass
@@ -120,41 +157,23 @@ class GameState(Singleton):
 
 
 def loop():
-    screen = GlobalWindow.get_instance().screen
-    w = screen.get_width()
-    h = screen.get_height()
-    ow, oh = (w // 2, h // 2)
-    gameState = GameState.get_instance()
-    blue_square = pygame.Surface((Const.PLAYER_WIDTH, Const.PLAYER_HEIGHT))
-    blue_square.fill(Color.BLUE)
-    v_wall_surf = pygame.Surface((Const.PLAYER_WIDTH, Const.WALL_LENGTH))
-    v_wall_surf.fill(Color.WHITE)
-    h_wall_surf = pygame.Surface((Const.WALL_LENGTH, Const.PLAYER_HEIGHT))
-    h_wall_surf.fill(Color.WHITE)
+    window = GlobalWindow.get_instance()
+    game_state = GameState.get_instance()
 
     while True:
+        sleeper = threading.Thread(
+            target=lambda: time.sleep(Const.STEP_DURATION)
+        )
+        sleeper.start()
+
         try:
-            gameState.update()
+            game_state.update()
         except Quit:
             return
 
-        screen.fill(Color.BLACK)
-        screen.blit(blue_square, (
-            (w - Const.PLAYER_WIDTH) // 2,
-            (h - Const.PLAYER_HEIGHT) // 2
-        ))
-        for h_wall in (gameState.walls[key] for key in ("top", "bot")):
-            screen.blit(h_wall_surf, (
-                ow + h_wall[0] - gameState.blue_square_pos[0] - Const.WALL_LENGTH // 2,
-                oh + h_wall[1] - gameState.blue_square_pos[1] - Const.PLAYER_HEIGHT // 2,
-            ))
-        for v_wall in (gameState.walls[key] for key in ("left", "right")):
-            screen.blit(v_wall_surf, (
-                ow + v_wall[0] - gameState.blue_square_pos[0] - Const.PLAYER_WIDTH // 2,
-                oh + v_wall[1] - gameState.blue_square_pos[1] - Const.WALL_LENGTH // 2,
-            ))
+        window.update()
 
-        time.sleep(Const.STEP_DURATION)
+        sleeper.join()
         pygame.display.flip()
 
 
