@@ -100,19 +100,21 @@ class GameState(Singleton):
 
         for key in (pygame.K_UP, pygame.K_DOWN, pygame.K_RIGHT, pygame.K_LEFT):
             if keydown[key]:
-                self.blue_square_pos[
-                    1 if key in VERTICAL else 0
-                ] += round(
-                    (
-                        Const.PLAYER_SPRINT
-                        if keydown[pygame.K_LSHIFT]
-                        else Const.PLAYER_STEP
-                    ) * (
-                        sqrt(2).real / 2
-                        if any(keydown[orth] for orth in ORTH[key])
-                        else 1
-                    )
-                ) * (1 if key in POSITIVE else -1)
+                coord = 1 if key in VERTICAL else 0
+                step = (
+                    Const.PLAYER_SPRINT
+                    if keydown[pygame.K_LSHIFT]
+                    else Const.PLAYER_STEP
+                )
+                diagonal_factor = (
+                    sqrt(2).real / 2
+                    if any(keydown[orth] for orth in ORTH[key])
+                    else 1
+                )
+                direction = 1 if key in POSITIVE else -1
+                self.blue_square_pos[coord] += (
+                    direction * round(step * diagonal_factor)
+                )
 
 
 def loop():
