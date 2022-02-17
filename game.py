@@ -60,8 +60,6 @@ class Config(Singleton):
 
 
 class Window(Singleton):
-    _singleton = None
-
     def __init__(self):
         config = Config.get_instance()
         size = config.WIDTH, config.HEIGHT
@@ -71,11 +69,12 @@ class Window(Singleton):
             size, fullscreen | borderless
         )
 
-        self.blue_square = pygame.Surface(
+        self.blue_square_surf = pygame.Surface(
             (Const.PLAYER_WIDTH, Const.PLAYER_HEIGHT)
         )
+        self.blue_square_surf.fill(Color.BLUE)
+
         WALL_LENGTH = 1000
-        self.blue_square.fill(Color.BLUE)
         self.v_wall_surf = pygame.Surface(
             (Const.PLAYER_WIDTH, WALL_LENGTH)
         )
@@ -85,30 +84,32 @@ class Window(Singleton):
         )
         self.h_wall_surf.fill(Color.WHITE)
 
-    def update(self):
+    def _blit(self, surface, pos, dim):
+        x, y = pos
+        w, h = dim
         screen = self.screen
-        w = screen.get_width()
-        h = screen.get_height()
-        ow, oh = (w // 2, h // 2)
+        ox, oy = (screen.get_width() // 2, screen.get_height() // 2)
+
+        screen.blit(
+            surface,
+            (
+                ox + x - (w // 2),
+                oy + y - (h // 2),
+            )
+        )
+
+    def update(self):
         game_state = GameState.get_instance()
 
-        screen.fill(Color.BLACK)
-        screen.blit(self.blue_square, (
-            (w - Const.PLAYER_WIDTH) // 2,
-            (h - Const.PLAYER_HEIGHT) // 2
-        ))
-        WALL_LENGTH = 1000  # pixels
+        self.screen.fill(Color.BLACK)
 
+        WALL_LENGTH = 1000  # pixels
         for h_wall in (game_state.walls[key] for key in ("top", "bot")):
-            screen.blit(self.h_wall_surf, (
-                ow + h_wall[0] - game_state.blue_square_pos[0] - WALL_LENGTH // 2,  # noqa E501
-                oh + h_wall[1] - game_state.blue_square_pos[1] - Const.PLAYER_HEIGHT // 2,  # noqa E501
-            ))
+            self._blit(self.h_wall_surf, h_wall, (WALL_LENGTH, Const.PLAYER_HEIGHT))
         for v_wall in (game_state.walls[key] for key in ("left", "right")):
-            screen.blit(self.v_wall_surf, (
-                ow + v_wall[0] - game_state.blue_square_pos[0] - Const.PLAYER_WIDTH // 2,  # noqa E501
-                oh + v_wall[1] - game_state.blue_square_pos[1] - WALL_LENGTH // 2,  # noqa E501
-            ))
+            self._blit(self.v_wall_surf, v_wall, (Const.PLAYER_HEIGHT, WALL_LENGTH))
+
+        self._blit(self.blue_square_surf, (0, 0), (Const.PLAYER_WIDTH, Const.PLAYER_HEIGHT))
 
 
 class Quit(Exception):
