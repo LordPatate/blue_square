@@ -2,7 +2,8 @@ from math import sqrt
 
 import pygame
 
-from game import Const, Quit
+from game.const import Const
+from game.exceptions import Quit
 from singleton import Singleton
 
 HORIZONTAL = pygame.K_LEFT, pygame.K_RIGHT

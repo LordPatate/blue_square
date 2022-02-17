@@ -1,8 +1,8 @@
 import pygame
 
-from game import Const, GameState
-from game.const import Color
 from game.config import Config
+from game.const import Color, Const
+from game.game_state import GameState
 from singleton import Singleton
 
 
