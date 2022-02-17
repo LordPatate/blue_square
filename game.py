@@ -22,12 +22,12 @@ class Const:
     FRAME_RATE = 120  # frames per sec
     PLAYER_WIDTH = 30  # pixels
     PLAYER_HEIGHT = 30  # pixels
-    PLAYER_STEP_PPS = 600  # pixels per sec
-    PLAYER_SPRINT_PPS = 1200  # pixels per sec
+    PLAYER_NORMAL_SPEED = 600  # pixels per sec
+    PLAYER_SPRINT_SPEED = 1200  # pixels per sec
 
     STEP_DURATION = round(1 / FRAME_RATE * 1000) / 1000
-    PLAYER_STEP = round(PLAYER_STEP_PPS / FRAME_RATE)
-    PLAYER_SPRINT = round(PLAYER_SPRINT_PPS / FRAME_RATE)
+    PLAYER_STEP = round(PLAYER_NORMAL_SPEED / FRAME_RATE)
+    PLAYER_SPRINT = round(PLAYER_SPRINT_SPEED / FRAME_RATE)
 
 
 class Color:
