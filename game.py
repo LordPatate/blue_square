@@ -1,4 +1,4 @@
-from cmath import sqrt
+from math import sqrt
 import json
 import logging
 import pathlib
@@ -59,7 +59,7 @@ class Config(Singleton):
             json.dump(self.__dict__, f)
 
 
-class GlobalWindow(Singleton):
+class Window(Singleton):
     _singleton = None
 
     def __init__(self):
@@ -149,7 +149,7 @@ class GameState(Singleton):
                 else Const.PLAYER_STEP
             )
             diagonal_factor = (
-                sqrt(2).real / 2
+                sqrt(2) / 2
                 if any(keydown[orth] for orth in ORTH[direction])
                 else 1
             )
@@ -162,8 +162,10 @@ class GameState(Singleton):
         )
 
 
-def loop():
-    window = GlobalWindow.get_instance()
+def main():
+    pygame.init()
+
+    window = Window.get_instance()
     game_state = GameState.get_instance()
 
     while True:
@@ -183,5 +185,5 @@ def loop():
         pygame.display.flip()
 
 
-pygame.init()
-loop()
+if __name__ == "__main__":
+    main()
