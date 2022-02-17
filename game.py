@@ -172,7 +172,8 @@ def main(_window=_DEFAULT, _game_state=_DEFAULT):
 
     while True:
         sleeper = threading.Thread(
-            target=lambda: time.sleep(Const.STEP_DURATION)
+            target=time.sleep,
+            args=(Const.STEP_DURATION,)
         )
         sleeper.start()
 
