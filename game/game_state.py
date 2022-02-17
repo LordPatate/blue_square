@@ -25,7 +25,7 @@ class GameState(Singleton):
         }
 
     def update(self):
-        _ = pygame.event.get()
+        pygame.event.pump()
         keydown = pygame.key.get_pressed()
 
         if keydown[pygame.K_ESCAPE]:
