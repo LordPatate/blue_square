@@ -119,8 +119,8 @@ class Quit(Exception):
 HORIZONTAL = pygame.K_LEFT, pygame.K_RIGHT
 VERTICAL = pygame.K_UP, pygame.K_DOWN
 ORTH = {
-    pygame.K_UP: HORIZONTAL, pygame.K_DOWN: HORIZONTAL,
-    pygame.K_LEFT: VERTICAL, pygame.K_RIGHT: VERTICAL
+    key: (VERTICAL if key in HORIZONTAL else HORIZONTAL)
+    for key in (HORIZONTAL + VERTICAL)
 }
 
 
