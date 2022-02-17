@@ -52,8 +52,16 @@ class Window(Singleton):
 
         WALL_LENGTH = 1000  # pixels
         for h_wall in (game_state.walls[key] for key in ("top", "bot")):
-            self._blit(self.h_wall_surf, h_wall, (WALL_LENGTH, Const.PLAYER_HEIGHT))
+            pos = (
+                h_wall[0] - game_state.blue_square_pos[0],
+                h_wall[1] - game_state.blue_square_pos[1],
+            )
+            self._blit(self.h_wall_surf, pos, (WALL_LENGTH, Const.PLAYER_HEIGHT))
         for v_wall in (game_state.walls[key] for key in ("left", "right")):
-            self._blit(self.v_wall_surf, v_wall, (Const.PLAYER_HEIGHT, WALL_LENGTH))
+            pos = (
+                v_wall[0] - game_state.blue_square_pos[0],
+                v_wall[1] - game_state.blue_square_pos[1],
+            )
+            self._blit(self.v_wall_surf, pos, (Const.PLAYER_HEIGHT, WALL_LENGTH))
 
         self._blit(self.blue_square_surf, (0, 0), (Const.PLAYER_WIDTH, Const.PLAYER_HEIGHT))
