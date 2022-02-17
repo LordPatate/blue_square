@@ -155,12 +155,10 @@ class GameState(Singleton):
                 else 1
             )
             return round(step * diagonal_factor)
-        self.blue_square_pos[0] += (
-            _step_toward(pygame.K_RIGHT) - _step_toward(pygame.K_LEFT)
-        )
-        self.blue_square_pos[1] += (
-            _step_toward(pygame.K_DOWN) - _step_toward(pygame.K_UP)
-        )
+        self.blue_square_pos[0] += (_step_toward(pygame.K_RIGHT)
+                                    - _step_toward(pygame.K_LEFT))
+        self.blue_square_pos[1] += (_step_toward(pygame.K_DOWN)
+                                    - _step_toward(pygame.K_UP))
 
 
 def main():
