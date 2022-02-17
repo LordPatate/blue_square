@@ -161,11 +161,14 @@ class GameState(Singleton):
                                     - _step_toward(pygame.K_UP))
 
 
-def main():
+_DEFAULT = None
+
+
+def main(_window=_DEFAULT, _game_state=_DEFAULT):
     pygame.init()
 
-    window = Window.get_instance()
-    game_state = GameState.get_instance()
+    window = _window or Window.get_instance()
+    game_state = _game_state or GameState.get_instance()
 
     while True:
         sleeper = threading.Thread(
