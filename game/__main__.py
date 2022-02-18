@@ -3,7 +3,7 @@ import time
 
 import pygame
 
-from game import Const, GameState, Window
+from game import Config, Const, GameState, Window
 from game.exceptions import Quit
 
 _DEFAULT = None
@@ -12,6 +12,8 @@ _DEFAULT = None
 def main(_window=_DEFAULT, _game_state=_DEFAULT):
     pygame.init()
 
+    config = Config.get_instance()
+    config.load()
     window = _window or Window.get_instance()
     game_state = _game_state or GameState.get_instance()
 

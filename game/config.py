@@ -13,6 +13,8 @@ class Config(Singleton):
         self.WIDTH = self.HEIGHT * 16 // 9
         self.FULLSCREEN = False
         self.BORDERLESS = True
+
+    def load(self):
         if pathlib.Path(Config._FILE).is_file():
             with open(Config._FILE) as f:
                 try:
