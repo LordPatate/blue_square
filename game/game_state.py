@@ -2,12 +2,14 @@ from math import sqrt
 
 import pygame
 
+from game import Config
 from game.const import Const
+from game.controls import Controls
 from game.exceptions import Quit
 from singleton import Singleton
 
-HORIZONTAL = pygame.K_LEFT, pygame.K_RIGHT
-VERTICAL = pygame.K_UP, pygame.K_DOWN
+HORIZONTAL = Controls.LEFT, Controls.RIGHT
+VERTICAL = Controls.UP, Controls.DOWN
 ORTH = {
     key: (VERTICAL if key in HORIZONTAL else HORIZONTAL)
     for key in (HORIZONTAL + VERTICAL)
@@ -27,25 +29,29 @@ class GameState(Singleton):
     def update(self):
         pygame.event.pump()
         keydown = pygame.key.get_pressed()
+        config = Config.get_instance()
 
-        if keydown[pygame.K_ESCAPE]:
+        def _is_pressed(control):
+            return any(keydown[key] for key in config.KEYMAP[control])
+
+        if _is_pressed(Controls.QUIT):
             raise Quit
 
         def _step_toward(direction):
-            if not keydown[direction]:
+            if not _is_pressed(direction):
                 return 0
             step = (
                 Const.PLAYER_SPRINT
-                if keydown[pygame.K_LSHIFT]
+                if _is_pressed(Controls.SPRINT)
                 else Const.PLAYER_STEP
             )
             diagonal_factor = (
                 sqrt(2) / 2
-                if any(keydown[orth] for orth in ORTH[direction])
+                if any(_is_pressed(orth) for orth in ORTH[direction])
                 else 1
             )
             return round(step * diagonal_factor)
-        self.blue_square_pos[0] += (_step_toward(pygame.K_RIGHT)
-                                    - _step_toward(pygame.K_LEFT))
-        self.blue_square_pos[1] += (_step_toward(pygame.K_DOWN)
-                                    - _step_toward(pygame.K_UP))
+        self.blue_square_pos[0] += (_step_toward(Controls.RIGHT)
+                                    - _step_toward(Controls.LEFT))
+        self.blue_square_pos[1] += (_step_toward(Controls.DOWN)
+                                    - _step_toward(Controls.UP))
