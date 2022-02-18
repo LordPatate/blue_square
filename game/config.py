@@ -2,6 +2,10 @@ import json
 import logging
 import pathlib
 
+from pygame import (
+    K_DOWN, K_LEFT, K_LSHIFT, K_RIGHT, K_UP, K_a, K_d, K_q, K_s, K_w, K_z
+)
+
 from singleton import Singleton
 
 
@@ -13,6 +17,14 @@ class Config(Singleton):
         self.WIDTH = self.HEIGHT * 16 // 9
         self.FULLSCREEN = False
         self.BORDERLESS = True
+
+        self.KEYMAP = {
+            "LEFT": [K_LEFT, K_q, K_a],
+            "RIGHT": [K_RIGHT, K_d],
+            "UP": [K_UP, K_z, K_w],
+            "DOWN": [K_DOWN, K_s],
+            "SPRINT": [K_LSHIFT],
+        }
 
     def load(self):
         if pathlib.Path(Config._FILE).is_file():
