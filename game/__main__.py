@@ -27,6 +27,7 @@ def main(_window=_DEFAULT, _game_state=_DEFAULT):
         try:
             game_state.update()
         except Quit:
+            game_state.on_exit()
             return
 
         window.update()

@@ -55,3 +55,6 @@ class GameState(Singleton):
                                     - _step_toward(Controls.LEFT))
         self.blue_square_pos[1] += (_step_toward(Controls.DOWN)
                                     - _step_toward(Controls.UP))
+
+    def on_exit(self):
+        pass
