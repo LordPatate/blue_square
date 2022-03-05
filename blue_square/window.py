@@ -1,13 +1,13 @@
 import pygame
 
 from blue_square.const import Color, Const
-from blue_square.game_state import BlueSquareGameState
+from game import ContextManager
 from game.window import Window as GameWindow
 
 
 class Window(GameWindow):
-    def __init__(self):
-        super().__init__()
+    def __init__(self, config):
+        super().__init__(config)
 
         self.blue_square_surf = pygame.Surface(
             (Const.PLAYER_WIDTH, Const.PLAYER_HEIGHT)
@@ -25,7 +25,8 @@ class Window(GameWindow):
         self.h_wall_surf.fill(Color.WHITE)
 
     def update(self):
-        game_state = BlueSquareGameState.get_instance()
+        context = ContextManager.get_instance()
+        game_state = context.game_state
 
         self.screen.fill(Color.BLACK)
 

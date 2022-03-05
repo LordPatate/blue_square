@@ -1,7 +1,4 @@
-from singleton import Singleton
-
-
-class GameState(Singleton):
+class GameState:
     def update(self):
         pass
 

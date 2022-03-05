@@ -5,6 +5,7 @@ import pygame
 
 from game.config import Config
 from game.const import Const
+from game.context_manager import ContextManager
 from game.controls import Controls
 from game.exceptions import Quit
 from game.game_state import GameState
@@ -15,11 +16,10 @@ _DEFAULT = None
 
 def main(_config=_DEFAULT, _window=_DEFAULT, _game_state=_DEFAULT):
     pygame.init()
+    context = ContextManager.init_singleton(_config, _window, _game_state)
 
-    config = _config or Config.get_instance()
-    config.load()
-    window = _window or Window.get_instance()
-    game_state = _game_state or GameState.get_instance()
+    window = context.window
+    game_state = context.game_state
 
     while True:
         sleeper = threading.Thread(

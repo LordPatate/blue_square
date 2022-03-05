@@ -2,8 +2,8 @@ from math import sqrt
 
 import pygame
 
-from blue_square import Const, Config
-from game import Controls, GameState
+from blue_square import Const
+from game import ContextManager, Controls, GameState
 from game.exceptions import Quit
 
 HORIZONTAL = Controls.LEFT, Controls.RIGHT
@@ -25,8 +25,9 @@ class BlueSquareGameState(GameState):
         }
 
     def update(self):
+        context = ContextManager.get_instance()
+        config = context.config
         keydown = pygame.key.get_pressed()
-        config = Config.get_instance()
 
         def _is_pressed(control):
             return any(keydown[key] for key in config.KEYMAP[control])

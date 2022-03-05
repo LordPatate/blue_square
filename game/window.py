@@ -1,12 +1,8 @@
 import pygame
 
-from game import Config
-from singleton import Singleton
 
-
-class Window(Singleton):
-    def __init__(self):
-        config = Config.get_instance()
+class Window:
+    def __init__(self, config):
         size = config.WIDTH, config.HEIGHT
         fullscreen = pygame.FULLSCREEN if config.FULLSCREEN else 0
         borderless = pygame.NOFRAME if config.BORDERLESS else 0
