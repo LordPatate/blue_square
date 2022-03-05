@@ -1,10 +1,7 @@
 from math import sqrt
 
-import pygame
-
-from blue_square import Const
-from game import ContextManager, Controls, GameState
-from game.exceptions import Quit
+from blue_square import Const, Controls
+from game import ContextManager, GameState
 
 HORIZONTAL = Controls.LEFT, Controls.RIGHT
 VERTICAL = Controls.UP, Controls.DOWN
@@ -25,27 +22,21 @@ class BlueSquareGameState(GameState):
         }
 
     def update(self):
+        super().update()
         context = ContextManager.get_instance()
-        config = context.config
-        keydown = pygame.key.get_pressed()
-
-        def _is_pressed(control):
-            return any(keydown[key] for key in config.KEYMAP[control])
-
-        if _is_pressed(Controls.QUIT):
-            raise Quit
+        controls = context.controls
 
         def _step_toward(direction):
-            if not _is_pressed(direction):
+            if not controls.is_pressed(direction):
                 return 0
             step = (
                 Const.PLAYER_SPRINT
-                if _is_pressed(Controls.SPRINT)
+                if controls.is_pressed(Controls.SPRINT)
                 else Const.PLAYER_STEP
             )
             diagonal_factor = (
                 sqrt(2) / 2
-                if any(_is_pressed(orth) for orth in ORTH[direction])
+                if any(controls.is_pressed(orth) for orth in ORTH[direction])
                 else 1
             )
             return round(step * diagonal_factor)

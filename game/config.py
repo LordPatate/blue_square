@@ -2,13 +2,8 @@ import json
 import logging
 import pathlib
 
-from pygame import K_ESCAPE
 
-from game.controls import Controls
-from singleton import Singleton
-
-
-class Config(Singleton):
+class Config:
     _FILE = "gameconfig"
 
     def __init__(self):
@@ -17,9 +12,7 @@ class Config(Singleton):
         self.FULLSCREEN = False
         self.BORDERLESS = True
 
-        self.KEYMAP = {
-            Controls.QUIT: [K_ESCAPE],
-        }
+        self.KEYMAP = dict()
 
     def load(self):
         if pathlib.Path(Config._FILE).is_file():

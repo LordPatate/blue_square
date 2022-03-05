@@ -1,8 +1,8 @@
-from blue_square import BlueSquareGameState, Config, Window
+from blue_square import BlueSquareGameState, Controls, Window
 from game import main
 
 main(
-    _config=Config,
+    _controls=Controls,
     _window=Window,
     _game_state=BlueSquareGameState
 )

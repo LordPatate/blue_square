@@ -14,12 +14,16 @@ from game.window import Window
 _DEFAULT = None
 
 
-def main(_config=_DEFAULT, _window=_DEFAULT, _game_state=_DEFAULT):
+def main(_config=_DEFAULT, _controls=_DEFAULT, _window=_DEFAULT, _game_state=_DEFAULT):
     pygame.init()
-    context = ContextManager.init_singleton(_config, _window, _game_state)
+    config = _config() if _config else Config()
+    config.load()
 
-    window = context.window
-    game_state = context.game_state
+    controls = _controls(config) if _controls else Controls(config)
+    window = _window(config) if _window else Window(config)
+    game_state = _game_state() if _game_state else GameState()
+
+    ContextManager.init_singleton(config, controls, window, game_state)
 
     while True:
         sleeper = threading.Thread(
@@ -30,6 +34,7 @@ def main(_config=_DEFAULT, _window=_DEFAULT, _game_state=_DEFAULT):
 
         pygame.event.pump()
         try:
+            controls.update()
             game_state.update()
         except Quit:
             game_state.on_exit()
