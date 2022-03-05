@@ -2,9 +2,9 @@ import json
 import logging
 import pathlib
 
-from pygame import (K_DOWN, K_ESCAPE, K_LEFT, K_LSHIFT, K_RIGHT, K_UP, K_a, K_d, K_q, K_s, K_w, K_z)
+from pygame import K_ESCAPE
 
-from controls import Controls
+from game.controls import Controls
 from singleton import Singleton
 
 
@@ -19,11 +19,6 @@ class Config(Singleton):
 
         self.KEYMAP = {
             Controls.QUIT: [K_ESCAPE],
-            Controls.LEFT: [K_LEFT, K_q, K_a],
-            Controls.RIGHT: [K_RIGHT, K_d],
-            Controls.UP: [K_UP, K_z, K_w],
-            Controls.DOWN: [K_DOWN, K_s],
-            Controls.SPRINT: [K_LSHIFT],
         }
 
     def load(self):
